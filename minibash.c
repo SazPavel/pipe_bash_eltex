@@ -23,9 +23,11 @@ int main()
         dup2(fd[1], 1);
         close(fd[0]);
         execlp("ls", "", "-la", NULL);
+        exit(0);
     }else{
         waitpid(pid, &status, 0);
         pid1 = fork();
+        close(fd[1]);
         if(pid1 == -1)
         {
             perror("fork2");
@@ -33,10 +35,10 @@ int main()
         }
         if(pid1 == 0){
             dup2(fd[0], 0);
-            close(fd[1]);
             execlp("wc", "", NULL);
         }else{
-            waitpid(pid, &status, 0);
+            wait(NULL);
+            //sleep(2);
         }
     }
     exit(0);
